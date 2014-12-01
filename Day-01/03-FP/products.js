@@ -66,3 +66,13 @@ var compareProductByValue = function(p1,p2){
 console.log("After sorting (product value)");
 sort(products,compareProductByValue);
 console.table(products);
+
+
+//min
+//max
+//avg
+//sum
+//filter
+//groupBy
+//any
+//all
