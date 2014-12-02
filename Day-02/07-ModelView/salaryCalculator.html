@@ -15,16 +15,46 @@
 	</style>
 	<script src="jquery-2.1.1.js"></script>
 	<script>
-	$(function(){
-		$("#btnCalculate").click(function(){
-			var basic = parseInt($("#txtBasic").val(),10),
-				hra = parseInt($("#txtHra").val(),10),
-				da = parseInt($("#txtDa").val(),10),
-				tax = parseInt($("#rangeTax").val(),10);
+	//Model
+	function SalaryCalculator(basic, hra, da, tax){
+		this.basic = basic;
+		this.hra = hra;
+		this.da = da;
+		this.tax = tax;
+		this.salary = 0;
 
-			var gross = basic + hra + da;
-			var salary = gross * ((100-tax)/100);
-			$("#divResult").html(salary);
+		this.onSalaryChange = undefined;
+	}
+
+	SalaryCalculator.prototype.calculate = function(){
+		var gross = this.basic + this.hra + this.da;
+		this.salary = gross * ((100-this.tax)/100)
+		if (typeof this.onSalaryChange === "function")
+			this.onSalaryChange();
+	}
+
+	//View
+	$(function(){
+		window.calc = new SalaryCalculator();
+
+		calc.onSalaryChange = function(){
+			$("#divResult").html(calc.salary);
+		}
+
+		$("#txtBasic").change(function(){
+			calc.basic = parseInt(this.value,10);
+		});
+		$("#txtHra").change(function(){
+			calc.hra = parseInt(this.value,10);
+		});
+		$("#txtDa").change(function(){
+			calc.da = parseInt(this.value,10);
+		});
+		$("#rangeTax").change(function(){
+			calc.tax = parseInt(this.value,10);
+		});
+		$("#btnCalculate").click(function(){
+			calc.calculate();
 		});
 
 		$("#rangeTax").change(function(){
