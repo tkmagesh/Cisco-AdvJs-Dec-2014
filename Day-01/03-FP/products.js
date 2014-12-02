@@ -69,10 +69,69 @@ console.table(products);
 
 
 //min
+var min = function(list, valueSelector){
+	var result = valueSelector(list[0]);
+	for(var i=1;i<list.length;i++){
+		var value = valueSelector(list[i]);
+		if (value < result) result = value;
+	}
+	return result;
+}
+
 //max
 //avg
 //sum
+
 //filter
+var filter = function(list, predicate){
+	var result = [];
+	for(var i=0;i<list.length;i++)
+		if (predicate(list[i]))
+			result.push(list[i]);
+	return result;
+}
+
+var costlyProductPredicate = function(p){ return p.cost > 50 ;}
+
+var notPredicate = function(predicate){
+	return function(){
+		return !predicate.apply(this,arguments);
+	}
+}
+
+var affordableProductPredicate = notPredicate(costlyProductPredicate);
+var affordableProducts = filter(products,affordableProductPredicate);
 //groupBy
+
+var groupBy = function(list,keySelector){
+	var result = {};
+	for(var i=0;i<list.length;i++){
+		var item = list[i];
+		var key = keySelector(item);
+		if (typeof result[key] === "undefined")
+			result[key] = [];
+		result[key].push(item);
+	}
+	return result;
+}
+
+var categoryKeySelector = function(p){ return p.category; };
+var producstByCategory = groupBy(products, categoryKeySelector);
+
+var costKeySelector = function(p){ return p.cost < 50 ? "affordable" : "costly" ;};
+var productsByCost = groupBy(products,costKeySelector);
+
 //any
+var any = function(list,predicate){
+	for(var i=0;i<list.length;i++)
+		if (predicate(list[i])) return true;
+	return false;
+}
+
 //all
+var all = function(list,predicate){
+	for(var i=0;i<list.length;i++)
+		if (!predicate(list[i])) return false;
+	return true;
+}
+
